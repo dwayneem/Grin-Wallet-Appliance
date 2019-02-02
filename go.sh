@@ -7,13 +7,14 @@ screen -d -m -S grin-server ~/grin/target/release/grin server run
 # start ngrok
 screen -d -m -S ngrok ~/ngrok http -bind-tls=false 3415
 
-sleep 3
+echo "Waiting for Grin Server to be ready."
+sleep 15
 
 height1=$(curl -u $userpass -s "http://127.0.0.1:3413/v1/chain" | jq -r '.height')
 height2=$(curl -u $userpass -s "http://127.0.0.1:3413/v1/peers/connected" | jq -r '.[0].height')
 
 until [ "$height1" == "$height2" ]; do 
-   echo "Waiting for Grin Server to be ready."
+   echo "Still waiting for Grin Server to be ready."
    sleep 15
    height1=$(curl -u $userpass -s "http://127.0.0.1:3413/v1/chain" | jq -r '.height')
    height2=$(curl -u $userpass -s "http://127.0.0.1:3413/v1/peers/connected" | jq -r '.[0].height')
